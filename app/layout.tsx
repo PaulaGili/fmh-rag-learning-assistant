@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { LanguageProvider } from "@/lib/LanguageContext";
-import Navigation from "@/components/Navigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,12 +30,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="h-full bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
-        <LanguageProvider>
-          <div className="flex h-full flex-col">
-            <Navigation />
-            <main className="flex-1 overflow-hidden">{children}</main>
-          </div>
-        </LanguageProvider>
+        {children}
       </body>
     </html>
   );

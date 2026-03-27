@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useLanguage } from "@/lib/LanguageContext";
 import { LANGUAGES, type Language } from "@/lib/languages";
 import { t } from "@/lib/i18n";
@@ -9,6 +10,13 @@ import { t } from "@/lib/i18n";
 export default function Navigation() {
   const pathname = usePathname();
   const { language, setLanguage } = useLanguage();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handler = () => setIsScrolled(window.scrollY > 4);
+    window.addEventListener("scroll", handler, { passive: true });
+    return () => window.removeEventListener("scroll", handler);
+  }, []);
 
   const tabs = [
     { href: "/", label: t("nav.chat", language), icon: ChatIcon },
@@ -17,8 +25,14 @@ export default function Navigation() {
   ];
 
   return (
-    <header className="sticky top-0 z-10 border-b border-zinc-200 bg-white/80 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80">
-      <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-2">
+    <header
+      className={`sticky top-0 z-30 border-b bg-white/80 backdrop-blur-lg transition-all dark:bg-zinc-950/80 ${
+        isScrolled
+          ? "border-zinc-200 shadow-sm dark:border-zinc-800"
+          : "border-transparent"
+      }`}
+    >
+      <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-2.5">
         {/* Logo + Title */}
         <Link href="/" className="flex items-center gap-2.5">
           <img
@@ -32,7 +46,7 @@ export default function Navigation() {
             }}
           />
           <div
-            className="h-8 w-8 items-center justify-center rounded-lg bg-rose-600 text-[10px] font-bold text-white"
+            className="h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-rose-500 to-rose-600 text-[10px] font-bold text-white shadow-sm"
             style={{ display: "none" }}
           >
             FMH
@@ -53,29 +67,32 @@ export default function Navigation() {
               <Link
                 key={tab.href}
                 href={tab.href}
-                className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+                className={`relative flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-all ${
                   isActive
-                    ? "bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400"
-                    : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+                    ? "text-rose-600 dark:text-rose-400"
+                    : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:text-zinc-200"
                 }`}
               >
                 <tab.icon className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">{tab.label}</span>
+                {isActive && (
+                  <span className="absolute -bottom-[11px] left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-rose-500" />
+                )}
               </Link>
             );
           })}
         </nav>
 
         {/* Language selector */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center rounded-lg border border-zinc-200 p-0.5 dark:border-zinc-700">
           {(Object.keys(LANGUAGES) as Language[]).map((lang) => (
             <button
               key={lang}
               onClick={() => setLanguage(lang)}
-              className={`rounded px-2 py-1 text-[10px] font-bold transition-colors ${
+              className={`rounded-md px-2 py-0.5 text-[10px] font-bold transition-colors ${
                 language === lang
-                  ? "bg-rose-600 text-white"
-                  : "text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+                  ? "bg-rose-600 text-white shadow-sm"
+                  : "text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
               }`}
             >
               {LANGUAGES[lang].flag}
