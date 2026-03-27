@@ -1,0 +1,152 @@
+/**
+ * Translate quiz questions and flashcards to German and French.
+ * Adds "question_de", "question_fr", "options_de", "options_fr" fields to quizzes.
+ * Adds "front_de", "front_fr", "back_de", "back_fr" fields to flashcards.
+ *
+ * Usage: npx tsx scripts/translate_content.ts
+ * Requires: ANTHROPIC_API_KEY in .env.local
+ */
+
+import fs from "fs";
+import path from "path";
+import Anthropic from "@anthropic-ai/sdk";
+
+const DATA_DIR = path.join(__dirname, "..", "data");
+const MODEL = "claude-haiku-4-5-20251001";
+
+function loadEnv() {
+  const envPath = path.join(__dirname, "..", ".env.local");
+  if (!fs.existsSync(envPath)) throw new Error(".env.local not found");
+  for (const line of fs.readFileSync(envPath, "utf-8").split("\n")) {
+    const m = line.match(/^([^=]+)=(.*)$/);
+    if (m) process.env[m[1].trim()] = m[2].trim();
+  }
+}
+
+function delay(ms: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+async function translateBatch(
+  client: Anthropic,
+  items: string[],
+  targetLang: string
+): Promise<string[]> {
+  const langName = targetLang === "de" ? "German" : "French";
+  const prompt = `Translate each of the following medical texts to ${langName}. Keep medical terminology accurate. Return ONLY a JSON array of strings in the same order, no other text.
+
+${JSON.stringify(items)}`;
+
+  const response = await client.messages.create({
+    model: MODEL,
+    max_tokens: 4096,
+    messages: [{ role: "user", content: prompt }],
+  });
+
+  const text = response.content[0].type === "text" ? response.content[0].text : "";
+  const match = text.match(/\[[\s\S]*\]/);
+  if (!match) return items; // fallback to original
+  try {
+    const result = JSON.parse(match[0]) as string[];
+    return result.length === items.length ? result : items;
+  } catch {
+    return items;
+  }
+}
+
+async function translateQuizzes(client: Anthropic) {
+  const quizPath = path.join(DATA_DIR, "quizzes.json");
+  const quizzes = JSON.parse(fs.readFileSync(quizPath, "utf-8"));
+
+  console.log(`Translating ${quizzes.length} quizzes...`);
+
+  const BATCH = 15;
+  for (let i = 0; i < quizzes.length; i += BATCH) {
+    const batch = quizzes.slice(i, i + BATCH);
+
+    // Collect all texts to translate
+    const questions = batch.map((q: any) => q.question);
+    const allOptions = batch.flatMap((q: any) => q.options.map((o: any) => o.text));
+    const explanations = batch.map((q: any) => q.explanation || "").filter(Boolean);
+
+    for (const lang of ["de", "fr"] as const) {
+      // Translate questions
+      const trQ = await translateBatch(client, questions, lang);
+      // Translate options
+      const trO = await translateBatch(client, allOptions, lang);
+      // Translate explanations
+      const trE = explanations.length > 0
+        ? await translateBatch(client, explanations, lang)
+        : [];
+
+      let optIdx = 0;
+      let expIdx = 0;
+      for (let j = 0; j < batch.length; j++) {
+        const q = quizzes[i + j];
+        q[`question_${lang}`] = trQ[j] || q.question;
+        q[`options_${lang}`] = q.options.map((o: any, k: number) => ({
+          id: o.id,
+          text: trO[optIdx + k] || o.text,
+        }));
+        optIdx += q.options.length;
+        if (q.explanation) {
+          q[`explanation_${lang}`] = trE[expIdx] || q.explanation;
+          expIdx++;
+        }
+      }
+      await delay(500);
+    }
+
+    const done = Math.min(i + BATCH, quizzes.length);
+    console.log(`  Quizzes ${done}/${quizzes.length}`);
+  }
+
+  fs.writeFileSync(quizPath, JSON.stringify(quizzes, null, 2), "utf-8");
+  console.log("  Quizzes saved.\n");
+}
+
+async function translateFlashcards(client: Anthropic) {
+  const fcPath = path.join(DATA_DIR, "flashcards.json");
+  const cards = JSON.parse(fs.readFileSync(fcPath, "utf-8"));
+
+  console.log(`Translating ${cards.length} flashcards...`);
+
+  const BATCH = 25;
+  for (let i = 0; i < cards.length; i += BATCH) {
+    const batch = cards.slice(i, i + BATCH);
+    const fronts = batch.map((c: any) => c.front);
+    const backs = batch.map((c: any) => c.back);
+
+    for (const lang of ["de", "fr"] as const) {
+      const trF = await translateBatch(client, fronts, lang);
+      const trB = await translateBatch(client, backs, lang);
+
+      for (let j = 0; j < batch.length; j++) {
+        cards[i + j][`front_${lang}`] = trF[j] || cards[i + j].front;
+        cards[i + j][`back_${lang}`] = trB[j] || cards[i + j].back;
+      }
+      await delay(500);
+    }
+
+    const done = Math.min(i + BATCH, cards.length);
+    console.log(`  Flashcards ${done}/${cards.length}`);
+  }
+
+  fs.writeFileSync(fcPath, JSON.stringify(cards, null, 2), "utf-8");
+  console.log("  Flashcards saved.\n");
+}
+
+async function main() {
+  loadEnv();
+  const client = new Anthropic();
+
+  await translateQuizzes(client);
+  await translateFlashcards(client);
+
+  console.log("Done! All content translated to DE and FR.");
+}
+
+main().catch((err) => {
+  console.error("Fatal:", err);
+  process.exit(1);
+});
