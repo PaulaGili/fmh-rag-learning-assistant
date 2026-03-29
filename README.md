@@ -1,6 +1,6 @@
 # FMH Gynecology Learning Assistant
 
-A study platform for the Swiss FMH gynecology specialist exam (Facharztprüfung Gynäkologie und Geburtshilfe). The application supports three study modes — conversational Q&A, multiple-choice quiz, and spaced-repetition flashcards — all trilingual (DE/EN/FR). Answers are grounded exclusively in the official EGONE curriculum through a hybrid retrieval pipeline.
+A study platform for the Swiss FMH gynecology specialist exam (Facharztprüfung Gynäkologie und Geburtshilfe), built around the official EGONE training material. Supports three study modes: chat, quiz, and flashcards in German, English, and French.
 
 ## Architecture
 
