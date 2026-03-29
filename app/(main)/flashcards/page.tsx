@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState } from "react";
 import flashcardData from "@/data/flashcards.json";
 import { useLanguage } from "@/lib/LanguageContext";
 import { t, tCat } from "@/lib/i18n";
@@ -17,7 +17,37 @@ interface Flashcard {
   categoryDisplay: string;
 }
 
+interface CategoryProgress {
+  known: number;
+  total: number;
+}
+
+const STORAGE_KEY = "fmh_fc_best_progress";
 const allCards = flashcardData as Flashcard[];
+
+function loadBestProgress(): Record<string, CategoryProgress> {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveBestProgress(category: string, progress: CategoryProgress) {
+  try {
+    const all = loadBestProgress();
+    const existing = all[category];
+    const pct = progress.known / progress.total;
+    const existingPct = existing ? existing.known / existing.total : -1;
+    if (pct > existingPct) {
+      all[category] = progress;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+    }
+  } catch {
+    // localStorage unavailable — silently skip
+  }
+}
 
 function getCardText(card: Flashcard, field: "front" | "back", lang: string): string {
   if (lang === "en") return card[field];
@@ -27,6 +57,11 @@ function getCardText(card: Flashcard, field: "front" | "back", lang: string): st
 
 export default function FlashcardsPage() {
   const { language } = useLanguage();
+  const [bestProgress, setBestProgress] = useState<Record<string, CategoryProgress>>({});
+
+  useEffect(() => {
+    setBestProgress(loadBestProgress());
+  }, []);
 
   const categories = useMemo(() => {
     const cats = new Map<string, { display: string; count: number }>();
@@ -49,20 +84,21 @@ export default function FlashcardsPage() {
   const [known, setKnown] = useState(0);
   const [unknown, setUnknown] = useState(0);
 
-  const [shuffleSeed, setShuffleSeed] = useState(1);
+  const [shuffleSeed, setShuffleSeed] = useState(0);
   const deck = useMemo(() => {
     if (!selectedCategory) return [];
     const filtered = allCards.filter((c) => c.category === selectedCategory);
-    let seed = shuffleSeed;
-    return [...filtered].sort(() => {
-      seed = (seed * 16807) % 2147483647;
-      return (seed / 2147483647) - 0.5;
-    });
+    const shuffled = [...filtered];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
   }, [selectedCategory, shuffleSeed]);
 
   const currentCard = deck[currentIndex] ?? null;
 
-  const handleFlip = useCallback(() => setIsFlipped((f) => !f), []);
+  function handleFlip() { setIsFlipped((f) => !f); }
 
   function handleKnow() {
     setKnown((k) => k + 1);
@@ -86,6 +122,15 @@ export default function FlashcardsPage() {
     setKnown(0);
     setUnknown(0);
   }
+
+  const isDeckCompleted = selectedCategory !== null && deck.length > 0 && currentIndex >= deck.length;
+  useEffect(() => {
+    if (isDeckCompleted && selectedCategory && known + unknown > 0) {
+      saveBestProgress(selectedCategory, { known, total: known + unknown });
+      setBestProgress(loadBestProgress());
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDeckCompleted]);
 
   // Category selection
   if (!selectedCategory) {
@@ -126,9 +171,16 @@ export default function FlashcardsPage() {
                   </svg>
                 </div>
                 <p className="text-sm font-medium">{tCat(cat.key, language, cat.display)}</p>
-                <p className="mt-1 text-xs text-zinc-400">
-                  {cat.count} {t("fc.cards", language)}
-                </p>
+                <div className="mt-1 flex items-center justify-between">
+                  <p className="text-xs text-zinc-400">
+                    {cat.count} {t("fc.cards", language)}
+                  </p>
+                  {bestProgress[cat.key] && (
+                    <p className="text-xs font-medium text-rose-500">
+                      {t("quiz.best", language)}: {Math.round((bestProgress[cat.key].known / bestProgress[cat.key].total) * 100)}%
+                    </p>
+                  )}
+                </div>
               </button>
             ))}
           </div>

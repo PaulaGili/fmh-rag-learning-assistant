@@ -1,23 +1,35 @@
 import fmhData from "@/data/fmh_info.json";
-import embeddingData from "@/data/embeddings.json";
 import { getRelevantContext, type FmhEntry } from "./getRelevantContext";
 
 const MAX_RESULTS = 8;
 const MAX_CONTEXT_CHARS = 12_000;
-const MIN_SIMILARITY = 0.25;
+const MIN_SIMILARITY = 0.18;
 
 const entries = fmhData as FmhEntry[];
-const storedEmbeddings: number[][] = embeddingData.embeddings;
 
-let extractorPromise: Promise<any> | null = null;
+let embeddingsCache: number[][] | null = null;
 
-function getExtractor() {
+async function getStoredEmbeddings(): Promise<number[][]> {
+  if (embeddingsCache) return embeddingsCache;
+  const mod = await import("@/data/embeddings.json");
+  embeddingsCache = (mod.default as { embeddings: number[][] }).embeddings;
+  return embeddingsCache;
+}
+
+type FeatureExtractionPipeline = (
+  text: string,
+  options: { pooling: string; normalize: boolean }
+) => Promise<{ tolist: () => number[][] }>;
+
+let extractorPromise: Promise<FeatureExtractionPipeline> | null = null;
+
+function getExtractor(): Promise<FeatureExtractionPipeline> {
   if (!extractorPromise) {
     extractorPromise = import("@xenova/transformers").then((mod) =>
       mod.pipeline("feature-extraction", "Xenova/paraphrase-multilingual-MiniLM-L12-v2", {
         quantized: true,
       })
-    );
+    ) as Promise<FeatureExtractionPipeline>;
   }
   return extractorPromise;
 }
@@ -35,14 +47,12 @@ function cosineSimilarity(a: number[], b: number[]): number {
   return denom === 0 ? 0 : dot / denom;
 }
 
-/**
- * Hybrid retriever: combines semantic similarity (embeddings) with
- * keyword matching. Each approach finds candidates independently,
- * then results are merged by a combined score to get the best of both.
- */
+// Hybrid retriever: semantic similarity (60%) + keyword match (40%).
 export async function getRelevantContextSemantic(
   query: string
 ): Promise<FmhEntry[]> {
+  const storedEmbeddings = await getStoredEmbeddings();
+
   // 1. Semantic scores
   const extractor = await getExtractor();
   const result = await extractor(query, {
@@ -67,7 +77,6 @@ export async function getRelevantContextSemantic(
       (e) => e.topic === kwEntry.topic && e.source === kwEntry.source
     );
     if (idx !== -1) {
-      // Normalize keyword rank to 0-1 score (top result = 1.0)
       const rank = keywordIndices.size;
       keywordIndices.set(idx, 1.0 - rank * 0.1);
     }

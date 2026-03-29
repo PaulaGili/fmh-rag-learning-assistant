@@ -141,6 +141,11 @@ const translations = {
     en: "Quiz completed!",
     fr: "Quiz terminé !",
   },
+  "quiz.best": {
+    de: "Bestleistung",
+    en: "Best",
+    fr: "Meilleur",
+  },
   "quiz.correct": {
     de: "richtig",
     en: "correct",
@@ -318,10 +323,6 @@ export function t(key: TranslationKey, lang: Language, params?: Record<string, s
   return text;
 }
 
-/**
- * Translate a category key (e.g. "Senology_(G10p)") to the current language.
- * Falls back to the raw categoryDisplay if no translation exists.
- */
 export function tCat(category: string, lang: Language, fallback?: string): string {
   const key = `cat.${category}` as TranslationKey;
   const entry = translations[key];

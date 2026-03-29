@@ -28,6 +28,7 @@ const STOP_WORDS = new Set([
   "dans", "pour", "avec", "sur", "par", "que", "qui", "ne", "pas", "plus",
   "cette", "ces", "ses", "son", "leur", "leurs", "tout", "tous", "aussi",
   "comme", "mais", "donc", "car", "si", "quand", "dont", "où",
+  "quel", "quelle", "quels", "quelles", "est-ce", "qu", "comment",
 ]);
 
 /** DE/FR→EN medical term synonyms for cross-language retrieval */
@@ -115,23 +116,21 @@ const SYNONYMS: Record<string, string[]> = {
 function expandQuery(tokens: string[]): string[] {
   const expanded = [...tokens];
   for (const token of tokens) {
-    const synonyms = SYNONYMS[token];
+    // Try exact match first, then try without trailing 's'/'es' for French/German plurals
+    const synonyms =
+      SYNONYMS[token] ??
+      (token.endsWith("es") ? SYNONYMS[token.slice(0, -2)] : undefined) ??
+      (token.endsWith("s") ? SYNONYMS[token.slice(0, -1)] : undefined);
     if (synonyms) expanded.push(...synonyms);
   }
   return expanded;
 }
 
-/**
- * Keyword-based retriever that matches a user query against the local FMH
- * knowledge base. Supports bilingual queries (DE/EN) via synonym expansion.
- * Returns the top entries ranked by relevance score, capped to stay within
- * a reasonable context window for the LLM.
- */
 export function getRelevantContext(query: string): FmhEntry[] {
   const normalised = query.toLowerCase();
 
   const rawTokens = normalised
-    .split(/[\s,.\-:;!?()]+/)
+    .split(/[\s,.\-:;!?()\u0027\u2019]+/)
     .filter((t) => t.length >= MIN_TOKEN_LENGTH && !STOP_WORDS.has(t));
 
   const tokens = expandQuery(rawTokens);

@@ -90,6 +90,19 @@ body {
   to { opacity: 1; transform: scale(1); }
 }
 
+/* Markdown table overflow */
+.message-content table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+  border-collapse: collapse;
+}
+.message-content th,
+.message-content td {
+  white-space: normal;
+  min-width: 4rem;
+}
+
 /* Card hover lift */
 .card-hover {
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;

@@ -4,7 +4,7 @@ import { COOKIE_NAME, getExpectedToken } from "@/lib/auth";
 const PUBLIC_PATHS = ["/login", "/api/auth/login"];
 const STATIC_EXT = /\.(?:ico|svg|jpg|jpeg|png|gif|css|js|woff2?)$/;
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/_next") || STATIC_EXT.test(pathname)) {

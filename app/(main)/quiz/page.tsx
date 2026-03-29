@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import quizData from "@/data/quizzes.json";
 import { useLanguage } from "@/lib/LanguageContext";
 import { t, tCat } from "@/lib/i18n";
@@ -27,7 +27,37 @@ interface Quiz {
   source: string;
 }
 
+interface BestScore {
+  correct: number;
+  total: number;
+}
+
+const STORAGE_KEY = "fmh_quiz_best_scores";
 const allQuizzes = quizData as Quiz[];
+
+function loadBestScores(): Record<string, BestScore> {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveBestScore(category: string, score: BestScore) {
+  try {
+    const all = loadBestScores();
+    const existing = all[category];
+    const pct = score.correct / score.total;
+    const existingPct = existing ? existing.correct / existing.total : -1;
+    if (pct > existingPct) {
+      all[category] = score;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+    }
+  } catch {
+    // localStorage unavailable — silently skip
+  }
+}
 
 function getQuizText(quiz: Quiz, field: "question" | "explanation", lang: string): string {
   if (lang === "en") return quiz[field] ?? "";
@@ -43,6 +73,11 @@ function getQuizOptions(quiz: Quiz, lang: string): QuizOption[] {
 
 export default function QuizPage() {
   const { language } = useLanguage();
+  const [bestScores, setBestScores] = useState<Record<string, BestScore>>({});
+
+  useEffect(() => {
+    setBestScores(loadBestScores());
+  }, []);
 
   const categories = useMemo(() => {
     const cats = new Map<string, string>();
@@ -78,11 +113,13 @@ export default function QuizPage() {
   function handleSubmitAnswer() {
     if (!selectedOption) return;
     setShowResult(true);
-    const correctAnswer = currentQuiz?.correctAnswer ?? "A";
-    setScore((s) => ({
-      correct: s.correct + (selectedOption === correctAnswer ? 1 : 0),
-      total: s.total + 1,
-    }));
+    const correctAnswer = currentQuiz?.correctAnswer;
+    if (correctAnswer) {
+      setScore((s) => ({
+        correct: s.correct + (selectedOption === correctAnswer ? 1 : 0),
+        total: s.total + 1,
+      }));
+    }
   }
 
   function handleNext() {
@@ -98,6 +135,15 @@ export default function QuizPage() {
     setShowResult(false);
     setScore({ correct: 0, total: 0 });
   }
+
+  const isCompleted = selectedCategory !== null && filteredQuizzes.length > 0 && currentIndex >= filteredQuizzes.length;
+  useEffect(() => {
+    if (isCompleted && score.total > 0 && selectedCategory) {
+      saveBestScore(selectedCategory, score);
+      setBestScores(loadBestScores());
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isCompleted]);
 
   // Category selection screen
   if (!selectedCategory) {
@@ -123,6 +169,7 @@ export default function QuizPage() {
               const count = allQuizzes.filter(
                 (q) => q.category === key
               ).length;
+              const best = bestScores[key];
               return (
                 <button
                   key={key}
@@ -135,12 +182,19 @@ export default function QuizPage() {
                     </svg>
                   </div>
                   <p className="text-sm font-medium">{tCat(key, language, display)}</p>
-                  <p className="mt-1 text-xs text-zinc-400">
-                    {count}{" "}
-                    {count === 1
-                      ? t("quiz.questionSingular", language)
-                      : t("quiz.questionPlural", language)}
-                  </p>
+                  <div className="mt-1 flex items-center justify-between">
+                    <p className="text-xs text-zinc-400">
+                      {count}{" "}
+                      {count === 1
+                        ? t("quiz.questionSingular", language)
+                        : t("quiz.questionPlural", language)}
+                    </p>
+                    {best && (
+                      <p className="text-xs font-medium text-rose-500">
+                        {t("quiz.best", language)}: {Math.round((best.correct / best.total) * 100)}%
+                      </p>
+                    )}
+                  </div>
                 </button>
               );
             })}
@@ -155,7 +209,7 @@ export default function QuizPage() {
 
   // Quiz completed
   if (currentIndex >= filteredQuizzes.length) {
-    const pct = Math.round((score.correct / score.total) * 100);
+    const pct = score.total > 0 ? Math.round((score.correct / score.total) * 100) : 0;
     return (
       <div className="flex h-full items-center justify-center" style={{ animation: "scale-in 0.3s ease-out" }}>
         <div className="mx-auto max-w-sm px-4">
@@ -238,12 +292,12 @@ export default function QuizPage() {
         {/* Options */}
         <div className="mt-4 space-y-2">
           {(currentQuiz ? getQuizOptions(currentQuiz, language) : []).map((opt) => {
-            const correctAnswer = currentQuiz?.correctAnswer ?? "A";
+            const correctAnswer = currentQuiz?.correctAnswer;
             let optionStyle =
               "border-zinc-200 bg-white hover:border-rose-300 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-rose-700";
             let icon = null;
 
-            if (showResult) {
+            if (showResult && correctAnswer) {
               if (opt.id === correctAnswer) {
                 optionStyle =
                   "border-green-400 bg-green-50 dark:border-green-600 dark:bg-green-950/30";
@@ -264,6 +318,9 @@ export default function QuizPage() {
                 optionStyle =
                   "border-zinc-100 bg-zinc-50 opacity-50 dark:border-zinc-800 dark:bg-zinc-950";
               }
+            } else if (showResult && !correctAnswer && opt.id === selectedOption) {
+              optionStyle =
+                "border-zinc-400 bg-zinc-50 ring-1 ring-zinc-200 dark:border-zinc-600 dark:bg-zinc-900";
             } else if (selectedOption === opt.id) {
               optionStyle =
                 "border-rose-400 bg-rose-50/50 ring-1 ring-rose-200 dark:border-rose-600 dark:bg-rose-950/20 dark:ring-rose-900/30";

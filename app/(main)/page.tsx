@@ -6,11 +6,12 @@ import { useLanguage } from "@/lib/LanguageContext";
 import { t } from "@/lib/i18n";
 import ReactMarkdown from "react-markdown";
 import type { Components } from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const markdownComponents: Components = {
   p({ children }) {
     const text = typeof children === "string" ? children : "";
-    if (text.startsWith("\u26a0\ufe0f")) {
+    if (text.startsWith("\u26a0\ufe0f") || text.startsWith("[\u26a0\ufe0f")) {
       return <span className="warning-paragraph">{children}</span>;
     }
     return <p>{children}</p>;
@@ -142,7 +143,10 @@ export default function ChatPage() {
                       <div className="whitespace-pre-wrap">{text}</div>
                     ) : (
                       <div className="message-content prose prose-sm prose-zinc dark:prose-invert prose-a:text-rose-600 max-w-none">
-                        <ReactMarkdown components={markdownComponents}>
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          components={markdownComponents}
+                        >
                           {text}
                         </ReactMarkdown>
                       </div>
