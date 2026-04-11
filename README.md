@@ -151,7 +151,7 @@ git remote add hf https://huggingface.co/spaces/<your-username>/<your-space-name
 git push hf main
 ```
 
-HF picks up the `backend/Dockerfile` automatically and starts the build. The first build takes around 5 minutes because it downloads the sentence-transformers model. Once it's done, your backend URL will be `https://<your-username>-<your-space-name>.hf.space` — that's the value you'll put in `BACKEND_URL` on Vercel.
+HF picks up the `backend/Dockerfile` automatically and starts the build. The first build takes around 5 minutes because it downloads the sentence-transformers model. Once it's done, your backend URL will be `https://<your-username>-<your-space-name>.hf.space`, that's the value you'll put in `BACKEND_URL` on Vercel.
 
 You can check if the backend is ready by hitting `/health`:
 
