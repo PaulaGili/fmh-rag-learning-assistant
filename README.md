@@ -170,7 +170,7 @@ To redeploy after code changes, just push again: `git push hf main`.
    - `ANTHROPIC_API_KEY`
    - `AUTH_PASSWORD`
    - `AUTH_SALT`
-   - `BACKEND_URL` — the HF Space URL from above
+   - `BACKEND_URL` -> the HF Space URL from above
 
 Vercel redeploys automatically on every push to `main`.
 
