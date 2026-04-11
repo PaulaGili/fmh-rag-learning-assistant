@@ -69,7 +69,7 @@ app/
     auth/login/route.ts
     chat/route.ts           Proxy to backend
 backend/
-  main.py                   FastAPI — streaming chat, rate limiting
+  main.py                   FastAPI, streaming chat, rate limiting
   rag.py                    Hybrid retrieval (semantic + BM25)
   test_main.py
   test_rag.py
@@ -104,7 +104,7 @@ Each chat request goes through hybrid retrieval before calling the model.
 
 Non-English queries are first translated to English keyword phrases. The corpus is in English, so this helps BM25 match exact medical terms like FIGO staging or TNM that would otherwise miss cross-lingually.
 
-Retrieval combines two signals with an 85/15 weighting. Semantic search embeds the query with MiniLM-L12-v2 and scores it against pre-computed chunk embeddings via cosine similarity — a top-5 floor guarantees results even for low-similarity queries. BM25 adds a tokenized keyword match over the corpus, normalized and down-weighted so it doesn't override semantic ranking for non-English input.
+Retrieval combines two signals with an 85/15 weighting. Semantic search embeds the query with MiniLM-L12-v2 and scores it against pre-computed chunk embeddings via cosine similarity, a top-5 floor guarantees results even for low-similarity queries. BM25 adds a tokenized keyword match over the corpus, normalized and down-weighted so it doesn't override semantic ranking for non-English input.
 
 The top-ranked chunks are taken up to 20 results / 32k characters and injected into the system prompt. The model is instructed to answer only from the retrieved context with no inference beyond what's written. If the context doesn't cover the question, it returns a fixed fallback phrase in the user's language.
 
