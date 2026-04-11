@@ -1,0 +1,175 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+:root {
+  --background: #F5F6F8;
+  --foreground: #1A1A2E;
+
+  --c-navy: #1A1A2E;
+  --c-navy-hover: #2D2D40;
+  --c-indigo: #4338CA;
+  --c-indigo-soft: #EEF2FF;
+  --c-indigo-border: #C7D2FE;
+  --c-border: #E2E4E9;
+  --c-muted: #6B7280;
+  --c-subtle: #9CA3AF;
+  --c-green: #38A169;
+  --c-green-soft: #D5F5E3;
+  --c-red: #E53E3E;
+  --c-red-soft: #FADBD8;
+  --c-yellow: #D4AC0D;
+  --c-yellow-soft: #FEF9E7;
+}
+
+@theme inline {
+  --font-sans: var(--font-dm-sans);
+  --font-serif: var(--font-dm-serif);
+  --font-mono: var(--font-geist-mono);
+  --animate-bounce-dot: bounce-dot 1.2s ease-in-out infinite;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E0;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #A0AEC0;
+}
+
+/* Warning marker paragraph */
+.message-content .warning-paragraph {
+  display: block;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background-color: rgba(245, 158, 11, 0.1);
+  color: rgb(120 53 15);
+  font-size: 0.8125rem;
+}
+
+/* Keyframe animations */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+
+@keyframes bounce-dot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* Markdown table overflow */
+.message-content table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+  border-collapse: collapse;
+}
+.message-content th,
+.message-content td {
+  white-space: normal;
+  min-width: 4rem;
+}
+
+/* Chat suggestion card hover */
+.card-hover {
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+.card-hover:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.10) !important;
+  transform: translateY(-1px);
+}
+
+/* Indigo button (login) */
+.btn-indigo {
+  background: var(--c-indigo);
+  color: white;
+  transition: background-color 150ms ease, transform 150ms ease;
+}
+.btn-indigo:hover:not(:disabled) { background: #3730A3; }
+.btn-indigo:active:not(:disabled) { transform: scale(0.98); }
+.btn-indigo:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Primary (dark navy) button */
+.btn-dark {
+  background: var(--c-navy);
+  color: white;
+  transition: background-color 150ms ease, transform 150ms ease;
+}
+.btn-dark:hover:not(:disabled) { background: var(--c-navy-hover); }
+.btn-dark:active:not(:disabled) { transform: scale(0.98); }
+.btn-dark:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Secondary (light gray) button */
+.btn-secondary {
+  background: #F7FAFC;
+  border: 1px solid #E2E8F0;
+  transition: background-color 150ms ease, transform 150ms ease;
+}
+.btn-secondary:hover { background: #EDF2F7; }
+.btn-secondary:active { transform: scale(0.98); }
+
+/* Know / Unknown flashcard buttons */
+.btn-know {
+  background: var(--c-green-soft);
+  color: #276749;
+  transition: background-color 150ms ease;
+}
+.btn-know:hover { background: #C2EFD4; }
+
+.btn-unknown {
+  background: var(--c-red-soft);
+  color: #9B2335;
+  transition: background-color 150ms ease;
+}
+.btn-unknown:hover { background: #F5C6C0; }
+
+/* Category card (quiz + flashcards) — accent set via --accent CSS var */
+.category-card {
+  background: white;
+  border: 0.5px solid var(--c-border);
+  border-top-width: 3px;
+  border-top-color: var(--accent, var(--c-indigo));
+  transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+}
+.category-card:hover {
+  border-color: var(--c-indigo-border);
+  border-top-color: var(--accent, var(--c-indigo));
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}

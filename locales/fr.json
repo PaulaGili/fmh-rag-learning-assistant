@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "title": "Assistant d'apprentissage en gynécologie",
+    "subtitle": "Examen de spécialiste Suisse",
+    "chat": "Chat",
+    "quiz": "Quiz",
+    "flashcards": "Fiches"
+  },
+  "chat": {
+    "welcome": "Bienvenue sur l'assistant d'apprentissage FMH",
+    "description": "Posez des questions sur la formation de spécialiste en gynécologie. Les réponses sont basées exclusivement sur les informations FMH enregistrées.",
+    "placeholder": "Posez une question sur la formation FMH …",
+    "error": "Erreur",
+    "initializing": "Chargement du modèle...",
+    "errorCredits": "Crédits API épuisés. Veuillez recharger votre compte.",
+    "errorKey": "Clé API invalide. Veuillez vérifier la configuration.",
+    "errorGeneric": "Erreur de connexion. Veuillez réessayer.",
+    "suggestion1": "Qu'est-ce que l'endométriose ?",
+    "suggestion2": "Comment classe-t-on le cancer du sein ?",
+    "suggestion3": "Comment traiter une grossesse ectopique ?",
+    "suggestion4": "Quels sont les stades du cancer ovarien ?"
+  },
+  "quiz": {
+    "title": "Quiz",
+    "chooseCategory": "Choisissez une catégorie pour commencer les questions QCM.",
+    "totalQuestions": "{count} questions disponibles au total.",
+    "questionSingular": "question",
+    "questionPlural": "questions",
+    "categories": "← Catégories",
+    "questionOf": "Question {current} / {total}",
+    "checkAnswer": "Vérifier la réponse",
+    "nextQuestion": "Question suivante →",
+    "showResult": "Afficher le résultat",
+    "completed": "Quiz terminé !",
+    "best": "Meilleur",
+    "correct": "correct",
+    "newCategory": "Choisir une nouvelle catégorie",
+    "explanation": "Explication"
+  },
+  "fc": {
+    "title": "Fiches d'apprentissage",
+    "chooseCategory": "Choisissez une catégorie.",
+    "totalCards": "{count} fiches disponibles au total.",
+    "cards": "fiches",
+    "categories": "← Catégories",
+    "clickToFlip": "Cliquez pour retourner",
+    "known": "Connu",
+    "unknown": "Pas connu",
+    "completed": "Paquet terminé !",
+    "again": "Encore",
+    "otherCategory": "Autre catégorie"
+  },
+  "cat": {
+    "Benign_adnexal_tumors_(G08p)": "Tumeurs annexielles bénignes",
+    "Benign_uterine_tumors_(G07p)": "Tumeurs utérines bénignes",
+    "Cervical_dysplasiacervical_carcinoma_(G11p)": "Dysplasie cervicale & carcinome cervical",
+    "Endometrial_cancer_malignancies_(G12p)": "Cancer de l'endomètre & tumeurs malignes",
+    "Endometriosis_(G04p)": "Endométriose",
+    "Malformations_(G16p)": "Malformations génitales",
+    "Miscarriage_abortion_(G06p)": "Fausse couche & avortement",
+    "Ovarian_tumors_(G13p)": "Tumeurs ovariennes",
+    "Psychosomatics_(G17p)": "Psychosomatique",
+    "Tumor_markers_(G15p)": "Marqueurs tumoraux",
+    "Vulvar_vaginal_cancer_(G14p)": "Cancer vulvaire & vaginal",
+    "genital_organs_(G01p)": "Organes génitaux",
+    "urogynecology_(G02p)": "Urogynécologie",
+    "case_series_gynaecology": "Séries de cas gynécologie",
+    "Senology_(G10p)": "Sénologie",
+    "Infektiologie_(G03p)": "Infectiologie",
+    "Ectopic_pregnancy_(G05p)": "Grossesse ectopique",
+    "Precancerous_lesions_of_vulvavagina_(G09p)": "Lésions précancéreuses vulve & vagin"
+  }
+}

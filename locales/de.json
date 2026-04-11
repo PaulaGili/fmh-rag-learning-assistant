@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "title": "Gynäkologie Lernassistent",
+    "subtitle": "Facharztprüfung Schweiz",
+    "chat": "Chat",
+    "quiz": "Quiz",
+    "flashcards": "Lernkarten"
+  },
+  "chat": {
+    "welcome": "Willkommen beim FMH Lernassistenten",
+    "description": "Stelle Fragen zur gynäkologischen Facharztausbildung. Die Antworten basieren ausschliesslich auf den hinterlegten FMH-Informationen.",
+    "placeholder": "Stelle eine Frage zur FMH-Weiterbildung …",
+    "error": "Fehler",
+    "initializing": "Modell wird geladen...",
+    "errorCredits": "API-Guthaben aufgebraucht. Bitte laden Sie Ihr Konto auf.",
+    "errorKey": "Ungültiger API-Schlüssel. Bitte überprüfen Sie die Konfiguration.",
+    "errorGeneric": "Verbindungsfehler. Bitte versuchen Sie es erneut.",
+    "suggestion1": "Was ist Endometriose?",
+    "suggestion2": "Wie wird Brustkrebs klassifiziert?",
+    "suggestion3": "Wie behandelt man eine Eileiterschwangerschaft?",
+    "suggestion4": "Welche Stadien hat das Ovarialkarzinom?"
+  },
+  "quiz": {
+    "title": "Quiz",
+    "chooseCategory": "Wähle eine Kategorie um mit den MC-Fragen zu starten.",
+    "totalQuestions": "Insgesamt {count} Fragen verfügbar.",
+    "questionSingular": "Frage",
+    "questionPlural": "Fragen",
+    "categories": "← Kategorien",
+    "questionOf": "Frage {current} / {total}",
+    "checkAnswer": "Antwort prüfen",
+    "nextQuestion": "Nächste Frage →",
+    "showResult": "Ergebnis anzeigen",
+    "completed": "Quiz abgeschlossen!",
+    "best": "Bestleistung",
+    "correct": "richtig",
+    "newCategory": "Neue Kategorie wählen",
+    "explanation": "Erklärung"
+  },
+  "fc": {
+    "title": "Lernkarten",
+    "chooseCategory": "Wähle eine Kategorie.",
+    "totalCards": "Insgesamt {count} Karten verfügbar.",
+    "cards": "Karten",
+    "categories": "← Kategorien",
+    "clickToFlip": "Klicken zum Umdrehen",
+    "known": "Gewusst",
+    "unknown": "Nicht gewusst",
+    "completed": "Stapel durchgearbeitet!",
+    "again": "Nochmal",
+    "otherCategory": "Andere Kategorie"
+  },
+  "cat": {
+    "Benign_adnexal_tumors_(G08p)": "Benigne Adnextumoren",
+    "Benign_uterine_tumors_(G07p)": "Benigne Uterustumoren",
+    "Cervical_dysplasiacervical_carcinoma_(G11p)": "Zervixdysplasie & Zervixkarzinom",
+    "Endometrial_cancer_malignancies_(G12p)": "Endometriumkarzinom & Malignome",
+    "Endometriosis_(G04p)": "Endometriose",
+    "Malformations_(G16p)": "Genitale Fehlbildungen",
+    "Miscarriage_abortion_(G06p)": "Fehlgeburt & Schwangerschaftsabbruch",
+    "Ovarian_tumors_(G13p)": "Ovarialtumoren",
+    "Psychosomatics_(G17p)": "Psychosomatik",
+    "Tumor_markers_(G15p)": "Tumormarker",
+    "Vulvar_vaginal_cancer_(G14p)": "Vulva- & Vaginalkarzinom",
+    "genital_organs_(G01p)": "Genitalorgane",
+    "urogynecology_(G02p)": "Urogynäkologie",
+    "case_series_gynaecology": "Fallserien Gynäkologie",
+    "Senology_(G10p)": "Senologie",
+    "Infektiologie_(G03p)": "Infektiologie",
+    "Ectopic_pregnancy_(G05p)": "Eileiterschwangerschaft",
+    "Precancerous_lesions_of_vulvavagina_(G09p)": "Präkanzeröse Läsionen Vulva & Vagina"
+  }
+}

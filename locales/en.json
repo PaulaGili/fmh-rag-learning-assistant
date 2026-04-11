@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "title": "Gynecology Learning Assistant",
+    "subtitle": "Specialist Exam Switzerland",
+    "chat": "Chat",
+    "quiz": "Quiz",
+    "flashcards": "Flashcards"
+  },
+  "chat": {
+    "welcome": "Welcome to the FMH Learning Assistant",
+    "description": "Ask questions about gynecological specialist training. Answers are based exclusively on the stored FMH information.",
+    "placeholder": "Ask a question about FMH training …",
+    "error": "Error",
+    "initializing": "Loading model...",
+    "errorCredits": "API credits exhausted. Please top up your account.",
+    "errorKey": "Invalid API key. Please check the configuration.",
+    "errorGeneric": "Connection error. Please try again.",
+    "suggestion1": "What is endometriosis?",
+    "suggestion2": "How is breast cancer classified?",
+    "suggestion3": "How is ectopic pregnancy managed?",
+    "suggestion4": "What are the stages of ovarian cancer?"
+  },
+  "quiz": {
+    "title": "Quiz",
+    "chooseCategory": "Choose a category to start with the MC questions.",
+    "totalQuestions": "{count} questions available in total.",
+    "questionSingular": "question",
+    "questionPlural": "questions",
+    "categories": "← Categories",
+    "questionOf": "Question {current} / {total}",
+    "checkAnswer": "Check answer",
+    "nextQuestion": "Next question →",
+    "showResult": "Show result",
+    "completed": "Quiz completed!",
+    "best": "Best",
+    "correct": "correct",
+    "newCategory": "Choose new category",
+    "explanation": "Explanation"
+  },
+  "fc": {
+    "title": "Flashcards",
+    "chooseCategory": "Choose a category.",
+    "totalCards": "{count} cards available in total.",
+    "cards": "cards",
+    "categories": "← Categories",
+    "clickToFlip": "Click to flip",
+    "known": "Known",
+    "unknown": "Didn't know",
+    "completed": "Deck completed!",
+    "again": "Again",
+    "otherCategory": "Other category"
+  },
+  "cat": {
+    "Benign_adnexal_tumors_(G08p)": "Benign Adnexal Tumors",
+    "Benign_uterine_tumors_(G07p)": "Benign Uterine Tumors",
+    "Cervical_dysplasiacervical_carcinoma_(G11p)": "Cervical Dysplasia & Cervical Carcinoma",
+    "Endometrial_cancer_malignancies_(G12p)": "Endometrial Cancer & Malignancies",
+    "Endometriosis_(G04p)": "Endometriosis",
+    "Malformations_(G16p)": "Genital Malformations",
+    "Miscarriage_abortion_(G06p)": "Miscarriage & Abortion",
+    "Ovarian_tumors_(G13p)": "Ovarian Tumors",
+    "Psychosomatics_(G17p)": "Psychosomatics",
+    "Tumor_markers_(G15p)": "Tumor Markers",
+    "Vulvar_vaginal_cancer_(G14p)": "Vulvar & Vaginal Cancer",
+    "genital_organs_(G01p)": "Genital Organs",
+    "urogynecology_(G02p)": "Urogynecology",
+    "case_series_gynaecology": "Case Series Gynaecology",
+    "Senology_(G10p)": "Senology",
+    "Infektiologie_(G03p)": "Infectiology",
+    "Ectopic_pregnancy_(G05p)": "Ectopic Pregnancy",
+    "Precancerous_lesions_of_vulvavagina_(G09p)": "Precancerous Lesions of Vulva & Vagina"
+  }
+}

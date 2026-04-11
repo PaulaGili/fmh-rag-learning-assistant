@@ -1,0 +1,17 @@
+node_modules
+.next
+.git
+.env*
+public/docs
+data/flashcards.json
+data/quizzes.json
+scripts
+tests
+app
+components
+lib
+*.md
+*.ts
+*.mjs
+package*.json
+tsconfig.json
