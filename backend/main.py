@@ -198,7 +198,11 @@ async def _translate_for_retrieval(query: str, language: str) -> str:
                 "content": (
                     "Convert the following gynecology question into a short English "
                     "keyword search phrase (5–12 words) using precise medical terms "
-                    "as they appear in English textbooks (e.g. FIGO, TNM, staging). "
+                    "as they appear in English textbooks. Always include specific "
+                    "clinical terms: drug names (tamoxifen, methotrexate), histological "
+                    "subtypes (endometrioid, serous, mucinous), biomarkers (HER2, "
+                    "triple negative, ER, PR), staging systems (FIGO, TNM), and "
+                    "procedures (salpingectomy, colposcopy, myomectomy). "
                     "Return ONLY the keywords, no explanation:\n\n" + query
                 ),
             }
