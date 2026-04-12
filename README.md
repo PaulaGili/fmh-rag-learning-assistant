@@ -1,5 +1,7 @@
 # FMH Gynecology Learning Assistant
 
+Frontend: [fmh-rag-learning-assistant.vercel.app](https://fmh-rag-learning-assistant.vercel.app) — Backend: [huggingface.co/spaces/PaulaGili/RAG-fmh-backend](https://huggingface.co/spaces/PaulaGili/RAG-fmh-backend)
+
 Study platform for the Swiss FMH gynecology specialist exam (Facharztprüfung Gynäkologie und Geburtshilfe), built on top of the official EGONE training material. Three study modes, chat, quiz, and flashcards, in German, English, and French.
 
 The chat answers questions grounded exclusively in the EGONE PDFs with clickable source references. The quiz parses multiple-choice questions directly from the official exam PDFs, organized by topic. Flashcards give a flip-card review interface with per-category progress tracking. Everything runs in DE/EN/FR including questions, answers, and explanations.
